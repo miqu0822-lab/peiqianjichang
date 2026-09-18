@@ -1,0 +1,291 @@
+==========================================================================================
+1. FACTORIAL EFFECT DECOMPOSITION (full 2x2x2, effect = mean(+)-mean(-))
+==========================================================================================
+            grand mean  E (CLIP-DCE)  F (CA-Had)  R (SNEMA-none)     ExF     ExR     FxR   ExFxR
+res metric                                                                                      
+HR  Score       0.5639        0.0367      0.0767         -0.0118 -0.0373  0.0072  0.0052 -0.0228
+    WIoU        0.6696        0.0272      0.0597         -0.0012 -0.0242 -0.0062  0.0012 -0.0077
+    SIoU        0.5809        0.0517      0.0847         -0.0363 -0.0443  0.0568  0.0078 -0.0182
+    eta         0.8855       -0.0020      0.0170          0.0115 -0.0100 -0.0345  0.0015 -0.0145
+    SSIM        0.9745        0.0030      0.0050         -0.0005 -0.0030  0.0005  0.0005 -0.0005
+    FID        14.7525       -1.6450     -3.0550         -0.6000  1.9350  1.1800  0.7900 -0.5300
+LR  Score       0.4655       -0.0015     -0.0030          0.0050  0.0105 -0.0025  0.0050 -0.0085
+    WIoU        0.5445       -0.0040     -0.0050          0.0060  0.0170 -0.0030  0.0040 -0.0060
+    SIoU        0.5146        0.0028      0.0037          0.0012  0.0102 -0.0043  0.0108 -0.0098
+    eta         0.8542       -0.0025     -0.0070          0.0040 -0.0030  0.0020 -0.0025 -0.0035
+    SSIM        0.9351       -0.0027     -0.0002          0.0013  0.0057  0.0002  0.0008 -0.0012
+    FID        36.5288        0.2725     -1.8625         -2.4575 -0.0575 -1.1825 -0.7975 -0.7925
+
+--- ScoreIoU effects as % of grand mean ---
+HR {'E (CLIP-DCE)': np.float64(6.52), 'F (CA-Had)': np.float64(13.61), 'R (SNEMA-none)': np.float64(-2.08), 'ExF': np.float64(-6.61), 'ExR': np.float64(1.29), 'FxR': np.float64(0.93), 'ExFxR': np.float64(-4.03)} | grand mean=0.5639
+LR {'E (CLIP-DCE)': np.float64(-0.32), 'F (CA-Had)': np.float64(-0.64), 'R (SNEMA-none)': np.float64(1.07), 'ExF': np.float64(2.26), 'ExR': np.float64(-0.54), 'FxR': np.float64(1.07), 'ExFxR': np.float64(-1.83)} | grand mean=0.4655
+
+--- variance explained by each term (sum of squares share, ScoreIoU) ---
+HR {'F (CA-Had)': '62.9%', 'ExF': '14.8%', 'E (CLIP-DCE)': '14.4%', 'ExFxR': '5.5%', 'R (SNEMA-none)': '1.5%', 'ExR': '0.6%', 'FxR': '0.3%'}
+LR {'ExF': '44.1%', 'ExFxR': '28.9%', 'R (SNEMA-none)': '10.0%', 'FxR': '10.0%', 'F (CA-Had)': '3.6%', 'ExR': '2.5%', 'E (CLIP-DCE)': '0.9%'}
+
+==========================================================================================
+2. HR vs LR RANKING AGREEMENT
+==========================================================================================
+Score  Spearman rho=-0.240 (p=0.568)  Kendall tau=-0.109  Pearson r=-0.349
+WIoU   Spearman rho=-0.310 (p=0.456)  Kendall tau=-0.214  Pearson r=-0.518
+SIoU   Spearman rho=-0.240 (p=0.568)  Kendall tau=-0.182  Pearson r=-0.008
+eta    Spearman rho=-0.060 (p=0.887)  Kendall tau=-0.074  Pearson r=-0.135
+SSIM   Spearman rho=-0.334 (p=0.419)  Kendall tau=-0.168  Pearson r=-0.594
+FID    Spearman rho=+0.333 (p=0.420)  Kendall tau=+0.286  Pearson r=+0.333
+
+Rank order HR (best->worst) by ScoreIoU: ['A7', 'A4', 'A1', 'A5', 'A2', 'A3', 'A0', 'A6']
+Rank order LR (best->worst) by ScoreIoU: ['A0', 'A4', 'A6', 'A7', 'A5', 'A2', 'A3', 'A1']
+Spread: HR ScoreIoU range = 0.148 (26.2% of mean); LR range = 0.027 (5.8% of mean)
+Coefficient of variation: HR 9.173%  LR 1.816%
+  CV Score : HR  9.17%   LR  1.82%
+  CV WIoU  : HR  5.65%   LR  2.03%
+  CV SIoU  : HR 11.91%   LR  1.96%
+  CV eta   : HR  2.65%   LR  0.63%
+  CV SSIM  : HR  0.36%   LR  0.38%
+  CV FID   : HR 15.56%   LR  5.12%
+
+==========================================================================================
+3. METRIC CORRELATION STRUCTURE (across 8 configurations)
+==========================================================================================
+
+-- HR Spearman --
+        Score   WIoU   SIoU    eta   SSIM    FID  Params
+Score   1.000  0.952  0.738  0.381  0.932 -0.929   0.586
+WIoU    0.952  1.000  0.667  0.429  0.932 -0.929   0.683
+SIoU    0.738  0.667  1.000 -0.190  0.856 -0.619   0.634
+eta     0.381  0.429 -0.190  1.000  0.192 -0.548   0.195
+SSIM    0.932  0.932  0.856  0.192  1.000 -0.907   0.628
+FID    -0.929 -0.929 -0.619 -0.548 -0.907  1.000  -0.488
+Params  0.586  0.683  0.634  0.195  0.628 -0.488   1.000
+
+-- LR Spearman --
+        Score   WIoU   SIoU    eta   SSIM    FID  Params
+Score   1.000  0.874  0.699  0.291  0.831  0.036  -0.466
+WIoU    0.874  1.000  0.611  0.145  0.958  0.024  -0.293
+SIoU    0.699  0.611  1.000 -0.333  0.530  0.252   0.123
+eta     0.291  0.145 -0.333  1.000  0.091  0.036  -0.667
+SSIM    0.831  0.958  0.530  0.091  1.000 -0.108  -0.368
+FID     0.036  0.024  0.252  0.036 -0.108  1.000  -0.049
+Params -0.466 -0.293  0.123 -0.667 -0.368 -0.049   1.000
+
+==========================================================================================
+4. COMPOSITE DECOMPOSITION: what drives ScoreIoU?
+==========================================================================================
+
+-- HR --
+  WIoU  vs ScoreIoU: Spearman +0.952  Pearson +0.971  CV=5.65%
+  SIoU  vs ScoreIoU: Spearman +0.738  Pearson +0.906  CV=11.91%
+  eta   vs ScoreIoU: Spearman +0.381  Pearson +0.366  CV=2.65%
+  per-image mean vs formula-of-means gap (covariance term):
+           Score  Score_nom     gap
+    Model                          
+    A0     0.512     0.5002  0.0118
+    A1     0.598     0.5840  0.0140
+    A2     0.569     0.5549  0.0141
+    A3     0.556     0.5480  0.0080
+    A4     0.607     0.6010  0.0060
+    A5     0.591     0.5768  0.0142
+    A6     0.465     0.4631  0.0019
+    A7     0.613     0.6025  0.0105
+    mean gap = +0.0101  (+1.79% of mean score), range +0.0019..+0.0142
+
+-- LR --
+  WIoU  vs ScoreIoU: Spearman +0.874  Pearson +0.943  CV=2.03%
+  SIoU  vs ScoreIoU: Spearman +0.699  Pearson +0.823  CV=1.96%
+  eta   vs ScoreIoU: Spearman +0.291  Pearson +0.159  CV=0.63%
+  per-image mean vs formula-of-means gap (covariance term):
+           Score  Score_nom     gap
+    Model                          
+    A0     0.476     0.4636  0.0124
+    A1     0.449     0.4358  0.0132
+    A2     0.464     0.4519  0.0121
+    A3     0.458     0.4452  0.0128
+    A4     0.470     0.4566  0.0134
+    A5     0.468     0.4541  0.0139
+    A6     0.470     0.4573  0.0127
+    A7     0.469     0.4545  0.0145
+    mean gap = +0.0131  (+2.82% of mean score), range +0.0121..+0.0145
+
+==========================================================================================
+5. PARAMETER EFFICIENCY
+==========================================================================================
+
+-- HR --
+       Params  Score  score_per_100M  dScore_vs_A0  dParams_vs_A0  score_per_Mparam_added
+Model                                                                                    
+A0      228.6  0.512          0.2240         0.000            0.0                     NaN
+A1      229.9  0.598          0.2601         0.086            1.3                 66.1538
+A2      237.3  0.569          0.2398         0.057            8.7                  6.5517
+A3      237.3  0.556          0.2343         0.044            8.7                  5.0575
+A4      229.9  0.607          0.2640         0.095            1.3                 73.0769
+A5      238.6  0.591          0.2477         0.079           10.0                  7.9000
+A6      228.6  0.465          0.2034        -0.047            0.0                     NaN
+A7      238.6  0.613          0.2569         0.101           10.0                 10.1000
+
+-- LR --
+       Params  Score  score_per_100M  dScore_vs_A0  dParams_vs_A0  score_per_Mparam_added
+Model                                                                                    
+A0      228.6  0.476          0.2082         0.000            0.0                     NaN
+A1      229.9  0.449          0.1953        -0.027            1.3                -20.7692
+A2      237.3  0.464          0.1955        -0.012            8.7                 -1.3793
+A3      237.3  0.458          0.1930        -0.018            8.7                 -2.0690
+A4      229.9  0.470          0.2044        -0.006            1.3                 -4.6154
+A5      238.6  0.468          0.1961        -0.008           10.0                 -0.8000
+A6      228.6  0.470          0.2056        -0.006            0.0                     NaN
+A7      238.6  0.469          0.1966        -0.007           10.0                 -0.7000
+
+CLIP branch cost (+8.7M ~ +3.8% params). Mean ScoreIoU by encoder:
+  HR: DCE=0.5455  CLIP=0.5822  diff=+0.0367 (+6.74%)
+  LR: DCE=0.4662  CLIP=0.4647  diff=-0.0015 (-0.32%)
+Cross-attention cost (+1.3M ~ +0.6% params). Mean ScoreIoU by fusion:
+  HR: Had=0.5255  CA=0.6022  diff=+0.0767 (+14.61%)
+  LR: Had=0.4670  CA=0.4640  diff=-0.0030 (-0.64%)
+
+==========================================================================================
+6. CONDITIONAL (SIMPLE) EFFECTS - the interaction made explicit
+==========================================================================================
+
+-- HR ScoreIoU simple effects --
+  Fusion effect (CA - Had) within each background:
+    DCE /None : +0.0860  (+16.8%)
+    DCE /SNEMA: +0.1420  (+30.5%)
+    CLIP/None : +0.0570  (+10.3%)
+    CLIP/SNEMA: +0.0220  ( +3.9%)
+  Encoder effect (CLIP - DCE) within each background:
+    Had /None : +0.0440  ( +8.6%)
+    Had /SNEMA: +0.1040  (+22.4%)
+    CA  /None : +0.0150  ( +2.5%)
+    CA  /SNEMA: -0.0160  ( -2.6%)
+  Regularization effect (SN+EMA - none) within each background:
+    DCE /Had  : -0.0470  ( -9.2%)
+    DCE /CA   : +0.0090  ( +1.5%)
+    CLIP/Had  : +0.0130  ( +2.3%)
+    CLIP/CA   : -0.0220  ( -3.6%)
+
+-- LR ScoreIoU simple effects --
+  Fusion effect (CA - Had) within each background:
+    DCE /None : -0.0270  ( -5.7%)
+    DCE /SNEMA: +0.0000  ( +0.0%)
+    CLIP/None : +0.0110  ( +2.4%)
+    CLIP/SNEMA: +0.0040  ( +0.9%)
+  Encoder effect (CLIP - DCE) within each background:
+    Had /None : -0.0180  ( -3.8%)
+    Had /SNEMA: -0.0060  ( -1.3%)
+    CA  /None : +0.0200  ( +4.5%)
+    CA  /SNEMA: -0.0020  ( -0.4%)
+  Regularization effect (SN+EMA - none) within each background:
+    DCE /Had  : -0.0060  ( -1.3%)
+    DCE /CA   : +0.0210  ( +4.7%)
+    CLIP/Had  : +0.0060  ( +1.3%)
+    CLIP/CA   : -0.0010  ( -0.2%)
+
+==========================================================================================
+7. RESOLUTION AS A FACTOR (HR-LR paired)
+==========================================================================================
+          HR     LR   diff     rel%
+Model                              
+A0     0.512  0.476  0.036   7.5630
+A1     0.598  0.449  0.149  33.1849
+A2     0.569  0.464  0.105  22.6293
+A3     0.556  0.458  0.098  21.3974
+A4     0.607  0.470  0.137  29.1489
+A5     0.591  0.468  0.123  26.2821
+A6     0.465  0.470 -0.005  -1.0638
+A7     0.613  0.469  0.144  30.7036
+
+mean HR-LR gain = +0.0984 (+21.2%), range -1.1%..+33.2%
+Wilcoxon signed-rank HR vs LR: WilcoxonResult(statistic=np.float64(1.0), pvalue=np.float64(0.015625))
+Resolution main effect on ScoreIoU = +0.0984
+Largest architecture main effect HR = 0.0767
+Full HR architecture span (best-worst) = 0.1480
+
+==========================================================================================
+8. THREE-WAY INTERACTION / 'DIMINISHING STACK' TEST
+==========================================================================================
+-- HR --
+  A0 baseline                  = 0.5120
+  +cross-attn alone (A1)       = +0.0860
+  +CLIP alone (A3)             = +0.0440
+  +SN+EMA alone (A6)           = -0.0470
+  additive prediction for A7 (E+F) = 0.6420 ; actual A7 = 0.6130 ; shortfall = -0.0290
+  additive prediction for A5 (all) = 0.5950 ; actual A5 = 0.5910 ; shortfall = -0.0040 (-0.7%)
+-- LR --
+  A0 baseline                  = 0.4760
+  +cross-attn alone (A1)       = -0.0270
+  +CLIP alone (A3)             = -0.0180
+  +SN+EMA alone (A6)           = -0.0060
+  additive prediction for A7 (E+F) = 0.4310 ; actual A7 = 0.4690 ; shortfall = +0.0380
+  additive prediction for A5 (all) = 0.4250 ; actual A5 = 0.4680 ; shortfall = +0.0430 (+10.1%)
+==========================================================================================
+A. OUTLIER DIAGNOSTICS - is A6-HR a degenerate checkpoint?
+==========================================================================================
+  HR Score : A6=0.4650  others mean=0.5780 sd=0.0355  z=-3.18
+  HR WIoU  : A6=0.6120  others mean=0.6779 sd=0.0322  z=-2.05
+  HR SIoU  : A6=0.4310  others mean=0.6023 sd=0.0361  z=-4.74
+  HR eta   : A6=0.8880  others mean=0.8851 sd=0.0253  z=+0.11
+  HR SSIM  : A6=0.9680  others mean=0.9754 sd=0.0026  z=-2.89
+  HR FID   : A6=16.5200  others mean=14.5000 sd=2.3562  z=+0.86
+
+  HR SIoU sorted: {'A6': 0.431, 'A0': 0.55, 'A3': 0.571, 'A4': 0.586, 'A2': 0.602, 'A7': 0.622, 'A5': 0.632, 'A1': 0.653}
+  gap A6 -> next lowest = 0.119 ; spread of remaining seven = 0.103
+
+  LR counterpart A6-LR Score=0.470 (rank 3 of 8) -> the HR collapse is not reproduced at LR
+  WIoU_c A6-HR=0.612 is normal (rank 8 of 8); only SIoU collapses -> contour-level failure, not segmentation-level
+
+==========================================================================================
+B. INFLUENCE OF A6 ON THE REPORTED CONTRASTS
+==========================================================================================
+  Full-design HR effects: {'E': np.float64(0.0367), 'F': np.float64(0.0767), 'R': np.float64(-0.0118), 'ExF': np.float64(-0.0373), 'ExR': np.float64(0.0072), 'FxR': np.float64(0.0052), 'ExFxR': np.float64(-0.0228)}
+  Table 9 contrasts involving A6: A6->A4 (+30.3%, fusion), A6->A2 (+22.2%, encoder), A0->A6 (-9.1%, reg)
+  -> 3 of 12 reported contrasts, and they are the 1st, 2nd and 5th largest |Delta| at HR.
+  HR contrasts ranked by |Delta%|: [('A6->A4', 'Fus', 30.3), ('A6->A2', 'Enc', 22.2), ('A0->A1', 'Fus', 16.7), ('A3->A7', 'Fus', 10.2), ('A0->A6', 'Reg', -9.1), ('A0->A3', 'Enc', 8.7), ('A2->A5', 'Fus', 3.8), ('A7->A5', 'Reg', -3.6), ('A4->A5', 'Enc', -2.6), ('A1->A7', 'Enc', 2.5), ('A3->A2', 'Reg', 2.3), ('A1->A4', 'Reg', 1.5)]
+  mean |Delta| with A6 = 20.5% ; without A6 = 5.8%
+
+  Fusion effect (HR ScoreIoU), all four backgrounds:  [np.float64(0.086), np.float64(0.057), np.float64(0.142), np.float64(0.022)]
+  mean fusion effect incl. A6 pair = +0.0767 ; excl. A6 pair = +0.0550 (72% of original)
+  -> fusion effect survives: still +10.1% relative to the Hadamard cells it is measured against.
+
+==========================================================================================
+C. WINSORISED / IMPUTED RE-ANALYSIS (A6-HR SIoU set to 7-config min)
+==========================================================================================
+  A6 imputed ScoreIoU = 0.5178 (was 0.4650)
+  Effects with imputed A6: {'E': np.float64(0.0235), 'F': np.float64(0.0635), 'R': np.float64(0.0015), 'ExF': np.float64(-0.024), 'ExR': np.float64(-0.006), 'FxR': np.float64(-0.008), 'ExFxR': np.float64(-0.0095)}
+  Effects with original A6: {'E': np.float64(0.0367), 'F': np.float64(0.0767), 'R': np.float64(-0.0118), 'ExF': np.float64(-0.0373), 'ExR': np.float64(0.0072), 'FxR': np.float64(0.0052), 'ExFxR': np.float64(-0.0228)}
+  SS share (original): {'F': '63%', 'ExF': '15%', 'E': '14%', 'ExFxR': '6%', 'R': '1%', 'ExR': '1%', 'FxR': '0%'}
+  SS share (imputed): {'F': '75%', 'ExF': '11%', 'E': '10%', 'ExFxR': '2%', 'FxR': '1%', 'ExR': '1%', 'R': '0%'}
+
+==========================================================================================
+D. SIGN CONSISTENCY TEST (non-parametric, no seed replication needed)
+==========================================================================================
+-- HR --
+  Fusion  (CA-Had): signs ['+', '+', '+', '+']  (4/4 positive)  two-sided sign test p=0.125  median Delta=+0.0715
+  Encoder (CLIP-DCE): signs ['+', '+', '+', '-']  (3/4 positive)  two-sided sign test p=0.625  median Delta=+0.0295
+  Reg     (SNEMA-none): signs ['-', '+', '+', '-']  (2/4 positive)  two-sided sign test p=1.000  median Delta=-0.0065
+-- LR --
+  Fusion  (CA-Had): signs ['-', '+', '-', '+']  (2/4 positive)  two-sided sign test p=1.000  median Delta=+0.0020
+  Encoder (CLIP-DCE): signs ['-', '+', '-', '-']  (1/4 positive)  two-sided sign test p=0.625  median Delta=-0.0040
+  Reg     (SNEMA-none): signs ['-', '+', '+', '-']  (2/4 positive)  two-sided sign test p=1.000  median Delta=+0.0025
+
+==========================================================================================
+E. WHAT THE COMPOSITE IS ACTUALLY MEASURING
+==========================================================================================
+  HR standardised regression of ScoreIoU on components: WIoU=+0.233 SIoU=+0.675 eta=+0.267  R2=0.9995
+      contribution of WIoU: |beta|*CV = 1.31 (relative units)
+      contribution of SIoU: |beta|*CV = 8.03 (relative units)
+      contribution of eta: |beta|*CV = 0.71 (relative units)
+  LR standardised regression of ScoreIoU on components: WIoU=+0.518 SIoU=+0.494 eta=+0.247  R2=0.9983
+      contribution of WIoU: |beta|*CV = 1.05 (relative units)
+      contribution of SIoU: |beta|*CV = 0.97 (relative units)
+      contribution of eta: |beta|*CV = 0.16 (relative units)
+
+==========================================================================================
+F. RESOLUTION x ARCHITECTURE: effect compression
+==========================================================================================
+  Score : |HR effect| / |LR effect|  E=  24.5x  F=  25.6x  R=   2.4x
+  WIoU  : |HR effect| / |LR effect|  E=   6.8x  F=  11.9x  R=   0.2x
+  SIoU  : |HR effect| / |LR effect|  E=  18.8x  F=  22.6x  R=  29.0x
+  eta   : |HR effect| / |LR effect|  E=   0.8x  F=   2.4x  R=   2.9x
+
+  Total between-configuration variance (ScoreIoU): HR var=0.002676  LR var=0.000071  ratio=37.5x
+  LR full span (0.0270) vs HR single fusion effect (0.0767): ratio 0.35
